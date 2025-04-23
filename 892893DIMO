@@ -1,0 +1,26 @@
+<html lang="ru">
+    <head>
+ 
+        <title>Dima</title>
+    </head>
+    <body>
+<style>
+  body {
+    background: url(Accounts/437831YARA/Fone.gif);
+  }
+</style>
+<img src="Icons/Cube.png" align="left" alt="Картинка" />
+<br>
+<h1>Cubes</h1>
+<br>
+<h1 align="right"><a href="Logined.html">Back</a></h1>
+<center><img src="Accounts/437831YARA/icon.png" align="center" alt="Картинка" />
+<br><h1>Yara Gileva</h1></center>
+<center><img src="Accounts/Test/WOW.gif" align="Left" alt="Картинка" />
+<br>
+<hr size="5" color="black">
+<h1>Статистика:</h1>
+<h2>Супер поинты:0% Номер Аккаунта:892893DIMO. Телефонный номер:NA. Количество коинов:250
+<img src="Icons/Coin.png" align="center" alt="Картинка" /></h2>
+    </body>
+</html>
