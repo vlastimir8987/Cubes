@@ -6,54 +6,37 @@ document.addEventListener('DOMContentLoaded', function() {
     loadPosts();
     
     // Обработка отправки формы
-    postForm.addEventListener('submit', async function(e) {
+    postForm.addEventListener('submit', function(e) {
         e.preventDefault();
         
         const title = document.getElementById('postTitle').value;
         const content = document.getElementById('postContent').value;
         
         if (title && content) {
-            await addPost(title, content);
+            addPost(title, content);
             postForm.reset();
         }
     });
     
-    // Загрузка постов с сервера
-    async function loadPosts() {
-        try {
-            const response = await fetch('/api/get_posts.php');
-            const posts = await response.json();
-            postsContainer.innerHTML = ''; // Очищаем контейнер перед загрузкой
-            posts.forEach(post => renderPost(post));
-        } catch (error) {
-            console.error('Ошибка при загрузке постов:', error);
-        }
+    // Добавление поста
+    function addPost(title, content) {
+        const post = {
+            id: Date.now(),
+            title,
+            content
+        };
+        
+        let posts = JSON.parse(localStorage.getItem('posts')) || [];
+        posts.push(post);
+        localStorage.setItem('posts', JSON.stringify(posts));
+        
+        renderPost(post);
     }
     
-    // Добавление поста на сервер
-    async function addPost(title, content) {
-        try {
-            const response = await fetch('/api/add_post.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ title, content })
-            });
-            const newPost = await response.json();
-            renderPost(newPost);
-        } catch (error) {
-            console.error('Ошибка при добавлении поста:', error);
-        }
-    }
-    
-    // Удаление поста
-    async function deletePost(id) {
-        try {
-            await fetch(`/api/delete_post.php?id=${id}`);
-            // Перезагружаем список постов после удаления
-            await loadPosts();
-        } catch (error) {
-            console.error('Ошибка при удалении поста:', error);
-        }
+    // Загрузка постов
+    function loadPosts() {
+        const posts = JSON.parse(localStorage.getItem('posts')) || [];
+        posts.forEach(post => renderPost(post));
     }
     
     // Отображение поста
@@ -67,7 +50,28 @@ document.addEventListener('DOMContentLoaded', function() {
         `;
         postsContainer.appendChild(postElement);
     }
-    
-    // Делаем функцию deletePost глобальной для работы из HTML
-    window.deletePost = deletePost;
 });
+
+// Удаление поста (глобальная функция для обработки onclick)
+function deletePost(id) {
+    let posts = JSON.parse(localStorage.getItem('posts')) || [];
+    posts = posts.filter(post => post.id !== id);
+    localStorage.setItem('posts', JSON.stringify(posts));
+    
+    // Перезагрузка постов
+    document.getElementById('postsContainer').innerHTML = '';
+    posts.forEach(post => renderPost(post));
+}
+
+// Повторное объявление renderPost для глобальной видимости
+function renderPost(post) {
+    const postsContainer = document.getElementById('postsContainer');
+    const postElement = document.createElement('div');
+    postElement.className = 'post';
+    postElement.innerHTML = `
+        <h3>${post.title}</h3>
+        <p>${post.content}</p>
+        <button onclick="deletePost(${post.id})">Удалить</button>
+    `;
+    postsContainer.appendChild(postElement);
+}
